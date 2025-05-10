@@ -18,7 +18,7 @@ class NewVisitorTest(unittest.TestCase):
         self.assertIn('To-Do', header_text)
         #应用有一个输入待办事项文本输入框
         inputbox = self.browser.find_element(By.ID,'id_new_item')
-        self.assertEqual(inputbox.get_attribute('placehoder'),
+        self.assertEqual(inputbox.get_attribute('placeholder'),
                          'Enter a to-do item')
 
         # 输入任务并提交
