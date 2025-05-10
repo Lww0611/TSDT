@@ -39,7 +39,7 @@ class NewVisitorTest(unittest.TestCase):
         inputbox.send_keys(Keys.ENTER)
         time.sleep(1)
 
-        self.check_for_row_in_list_table('1:Buy flowers')
+        self.check_for_row_in_list_table('1: Buy flowers')
         self.check_for_row_in_list_table('2: Give a gift to Lisi')
         # 测试未完成标记
         self.fail('Finish the test!')
