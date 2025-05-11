@@ -1,14 +1,53 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
     <head>
-        <title>To-Do lists</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>To-Do Lists</title>
+        <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            .container {
+                width: 1024px; /* 固定测试窗口宽度 */
+                margin: 0 auto;
+            }
+            .input-container {
+                width: 430px;  /* 精确控制表单容器宽度 */
+                margin: 0 auto; /* 水平居中 */
+                padding: 0; /* 清除内边距 */
+            }
+            #id_new_item {
+                width: 100%;  /* 填充容器宽度 */
+                box-sizing: border-box; /* 包含padding和border */
+            }
+            .text-center {
+                text-align: center;
+            }
+        </style>
     </head>
     <body>
-        <h1>{% block header_text %}{% endblock %}</h1>
-        <form method="POST" action="{% block form_action %}{% endblock %}">
-            <input name="item_text" id="id_new_item" placeholder="Enter a to-do item" />
-            {% csrf_token %}
-        </form>
-        {% block table %}
-        {% endblock %}
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 offset-md-3 jumbotron">
+                    <div class="text-center">
+                        <div class="input-container">  <!-- 新增的容器 -->
+                            <h1>{% block header_text %}{% endblock %}</h1>
+                            <form method="POST" action="{% block form_action %}{% endblock %}">
+                                <input name="item_text" id="id_new_item"
+                                       class="form-control input-lg"
+                                       placeholder="Enter a to-do item" />
+                                {% csrf_token %}
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 offset-md-3">
+                    {% block table %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
     </body>
 </html>
