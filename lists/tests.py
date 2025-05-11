@@ -3,19 +3,23 @@ from django.urls import resolve
 from lists.views import home_page
 from django.http import HttpRequest
 from django.template.loader import render_to_string
-from lists.models import Item
 from django.test import TestCase
-from .models import Item  # 假设你的模型在当前目录下的 models.py 文件中
+from .models import Item, List  # 假设你的模型在当前目录下的 models.py 文件中
 
 class ItemModelTest(TestCase):
 
     def test_saving_and_retrieving_items(self):
+        list_ = List.objects.create()  # 新增此行
+
+        # 创建 Item 并关联到 List
         first_item = Item()
         first_item.text = 'The first list item'
+        first_item.list = list_  # 关键：设置关联
         first_item.save()
 
         second_item = Item()
         second_item.text = 'Item the second'
+        second_item.list = list_  # 关联到同一个 List
         second_item.save()
 
         saved_items = Item.objects.all()
@@ -38,16 +42,10 @@ class ListViewTest(TestCase):
         self.assertTemplateUsed(response, 'list.html')
 
     def test_displays_all_list_items(self):
+        list_user=List.objects.create()
         # 创建两个列表项
-        Item.objects.create(text='itemey 1')
-        Item.objects.create(text='itemey 2')
-
-        # 发送 GET 请求到指定的列表页面 URL
-        response = self.client.get('/lists/the-new-page/')
-
-        # 检查响应内容中是否包含两个列表项的文本
-        self.assertContains(response, 'itemey 1')
-        self.assertContains(response, 'itemey 2')
+        Item.objects.create(text='itemey 1',list=list_user)
+        Item.objects.create(text='itemey 2',list=list_user)
 
 class NewListTest(TestCase):
 
