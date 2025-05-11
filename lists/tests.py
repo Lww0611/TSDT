@@ -31,27 +31,6 @@ class HomePageTest(TestCase):
         response = self.client.get('/')
         self.assertTemplateUsed(response, 'home.html')
 
-    def test_can_save_a_POST_request(self):
-        response = self.client.post('/', data={'item_text': 'A new list item'})
-
-        # 检查数据库中是否新增了一条记录
-        self.assertEqual(Item.objects.count(), 1)
-        # 获取新增的记录
-        new_item = Item.objects.first()
-        # 检查新增记录的内容是否正确
-        self.assertEqual(new_item.text, 'A new list item')
-
-    def test_redirects_after_POST(self):
-        response = self.client.post('/', data={'item_text': 'A new list item'})
-        # 检查响应状态码是否为302（重定向）
-        self.assertEqual(response.status_code, 302)
-        # 检查重定向的URL是否是根URL（'/'）
-        self.assertEqual(response['location'], '/lists/the-new-page/')
-
-    def test_only_saves_items_when_necessary(self):
-        self.client.get('/')
-        self.assertEqual(Item.objects.count(), 0)
-
 
 class ListViewTest(TestCase):
     def test_uses_list_template(self):
@@ -69,4 +48,15 @@ class ListViewTest(TestCase):
         # 检查响应内容中是否包含两个列表项的文本
         self.assertContains(response, 'itemey 1')
         self.assertContains(response, 'itemey 2')
-# Create your tests here.
+
+class NewListTest(TestCase):
+
+    def test_can_save_a_POST_request(self):
+        response = self.client.post('/lists/new', data={'item_text': 'A new list item'})
+        self.assertEqual(Item.objects.count(), 1)
+        new_item = Item.objects.first()
+        self.assertEqual(new_item.text, 'A new list item')
+
+    def test_redirects_after_POST(self):
+        response = self.client.post('/lists/new', data={'item_text': 'A new list item'})
+        self.assertRedirects(response, '/lists/the-new-page/')
