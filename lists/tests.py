@@ -4,6 +4,8 @@ from lists.views import home_page
 from django.http import HttpRequest
 from django.template.loader import render_to_string
 from lists.models import Item
+from django.test import TestCase
+from .models import Item  # 假设你的模型在当前目录下的 models.py 文件中
 
 class ItemModelTest(TestCase):
 
@@ -44,36 +46,27 @@ class HomePageTest(TestCase):
         # 检查响应状态码是否为302（重定向）
         self.assertEqual(response.status_code, 302)
         # 检查重定向的URL是否是根URL（'/'）
-        self.assertEqual(response['location'], '/')
+        self.assertEqual(response['location'], '/lists/the-new-page/')
 
     def test_only_saves_items_when_necessary(self):
         self.client.get('/')
         self.assertEqual(Item.objects.count(), 0)
 
-    def test_root_url_resolves_to_home_page_view(self):
-        found = resolve('/')
-        self.assertEqual(found.func, home_page)
 
-    def test_home_page_return_correct_html(self):
-        request = HttpRequest()
-        response = home_page(request)
-        html = response.content.decode('utf-8')
-        self.assertTrue(html.startswith('<html>'))
-        self.assertIn('<title>To-Do lists</title>', html)
-        self.assertTrue(html.endswith('</html>'))
-
-
-class HomePageTest(TestCase):
+class ListViewTest(TestCase):
+    def test_uses_list_template(self):
+        response = self.client.get('/lists/the-new-page/')
+        self.assertTemplateUsed(response, 'list.html')
 
     def test_displays_all_list_items(self):
         # 创建两个列表项
         Item.objects.create(text='itemey 1')
         Item.objects.create(text='itemey 2')
 
-        # 发送 GET 请求到主页
-        response = self.client.get('/')
+        # 发送 GET 请求到指定的列表页面 URL
+        response = self.client.get('/lists/the-new-page/')
 
         # 检查响应内容中是否包含两个列表项的文本
-        self.assertIn('itemey 1', response.content.decode())
-        self.assertIn('itemey 2', response.content.decode())
+        self.assertContains(response, 'itemey 1')
+        self.assertContains(response, 'itemey 2')
 # Create your tests here.
